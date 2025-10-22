@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-
+            $table->boolean('is_admin')->default(true);  //por ahora los usuarios son administradores
+            $table->string('phone')->nullable();
+            $table->boolean('active')->default(true);   //controla si el usuario puede iniciar sesión         
             $table->rememberToken();
             $table->timestamps();
         });
