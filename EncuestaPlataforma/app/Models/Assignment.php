@@ -18,6 +18,10 @@ class Assignment extends Model
         'pdf_path',
         'qr_text',
     ];
+    protected $casts = [
+        'assigned_at' => 'datetime',
+        'returned_at' => 'datetime',
+    ];
 
     // Relación con usuario
     public function user()

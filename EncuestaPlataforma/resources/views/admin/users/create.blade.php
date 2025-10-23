@@ -3,26 +3,58 @@
 @section('title', 'Crear Usuario')
 
 @section('content')
-<h1>Crear Usuario</h1>
+<div class="container mt-4">
+    <h1>Crear Usuario</h1>
 
-<form action="{{ route('users.store') }}" method="POST">
-    @csrf
-    <div class="mb-3">
-        <label for="name" class="form-label">Nombre</label>
-        <input type="text" class="form-control" id="name" name="name" required>
-    </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">Correo</label>
-        <input type="email" class="form-control" id="email" name="email" required>
-    </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Contraseña</label>
-        <input type="password" class="form-control" id="password" name="password" required>
-    </div>
-    <div class="mb-3">
-        <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>
-        <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Crear Usuario</button>
-</form>
+    <!-- Mensajes de error -->
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form id="createUserForm" action="{{ route('users.store') }}" method="POST">
+        @csrf
+        <div class="mb-3">
+            <label for="name" class="form-label">Nombre</label>
+            <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Correo electrónico</label>
+            <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Contraseña</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password_confirmation" class="form-label">Confirmar contraseña</label>
+            <input type="password" name="password_confirmation" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="phone" class="form-label">Teléfono</label>
+            <input type="text" name="phone" class="form-control" value="{{ old('phone') }}">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+document.getElementById('createUserForm').addEventListener('submit', function(e) {
+    e.stopPropagation(); // Evita que otros scripts bloqueen el submit
+    console.log('Form enviado'); // Depuración en la consola del navegador
+});
+</script>
+@endpush

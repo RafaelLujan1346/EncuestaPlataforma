@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\User; // Asegúrate de importar el modelo User
+use App\Models\User; 
+use Illuminate\Support\Facades\Hash;
+
+
 
 class UserController extends Controller
 {
@@ -30,21 +33,26 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // Validar y guardar nuevo usuario
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+            'phone' => 'nullable|string|max:20',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'phone' => $request->phone,
+            'is_admin' => true,
+            'active' => true,
         ]);
 
-        return redirect()->route('users.index')->with('success', 'Usuario creado correctamente');
+        return redirect()->route('users.index')
+                        ->with('success', "Usuario {$user->name} creado correctamente.");
     }
+
 
     /**
      * Display the specified resource.

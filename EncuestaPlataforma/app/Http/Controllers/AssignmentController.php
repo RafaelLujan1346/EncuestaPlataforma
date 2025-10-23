@@ -23,29 +23,27 @@ class AssignmentController extends Controller
         return view('admin.assignments.create', compact('users', 'devices'));
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'device_id' => 'required|exists:devices,id',
-            'assigned_at' => 'nullable|date',
-            'purpose' => 'nullable|string',
-        ]);
+public function store(Request $request)
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'device_id' => 'required|exists:devices,id',
+        'assigned_at' => 'required|date',
+        'returned_at' => 'required|date|after_or_equal:assigned_at', // <-- obligatorio
+        'purpose' => 'nullable|string',
+    ]);
 
-        Assignment::create([
-            'user_id' => $request->user_id,
-            'device_id' => $request->device_id,
-            'assigned_at' => $request->assigned_at,
-            'purpose' => $request->purpose,
-        ]);
+    $assignment = Assignment::create([
+        'user_id' => $request->user_id,
+        'device_id' => $request->device_id,
+        'assigned_at' => $request->assigned_at,
+        'returned_at' => $request->returned_at,
+        'purpose' => $request->purpose,
+    ]);
 
-        // Cambiar el estado del dispositivo a 'asignado'
-        $device = Device::find($request->device_id);
-        $device->status = 'asignado';
-        $device->save();
-
-        return redirect()->route('assignments.index')->with('success', 'Asignación creada correctamente');
-    }
+    return redirect()->route('assignments.index')
+        ->with('success', 'Asignación creada correctamente.');
+}
 
     public function show($id)
     {
