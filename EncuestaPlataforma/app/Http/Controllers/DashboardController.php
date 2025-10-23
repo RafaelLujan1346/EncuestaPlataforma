@@ -12,11 +12,12 @@ class DashboardController extends Controller
     public function index()
     {
         $totalUsuarios = User::count();
-        $usuariosActivos = User::where('active', true)->count();
+        $usuariosActivos = User::where('active', 1)->count();        // O simplemente User::count()
         $totalDispositivos = Device::count();
         $disponibles = Device::where('status', 'disponible')->count();
-        $asignacionesActivas = Assignment::count(); // o según tu lógica
+        $asignacionesActivas = Assignment::count();
         $mantenimiento = Device::where('status', 'mantenimiento')->count();
+
         $ultimasAsignaciones = Assignment::with(['user', 'device'])
             ->latest()
             ->take(5)
